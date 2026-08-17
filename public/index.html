@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Generate strict automobile manual test cases using your own LLM API key.">
+  <title>AutoCase Forge</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <p class="eyebrow">AUTOMOBILE QA WORKBENCH</p>
+      <h1>Turn requirements into disciplined test cases.</h1>
+      <p class="intro">Bring your own model key. Generate traceable manual test cases without adding unstated automobile behavior.</p>
+    </header>
+
+    <section class="panel" aria-labelledby="generator-heading">
+      <div class="panel-heading">
+        <div><span class="step">01</span><h2 id="generator-heading">Configure generation</h2></div>
+        <span class="secure">KEYS ARE NOT STORED</span>
+      </div>
+
+      <form id="generator-form">
+        <div class="grid">
+          <label>Provider<select id="provider" name="provider" required></select></label>
+          <label>Model<input id="model" name="model" autocomplete="off" maxlength="120" placeholder="Enter a model ID" required></label>
+        </div>
+        <label>API key
+          <div class="secret-field">
+            <input id="api-key" name="apiKey" type="password" autocomplete="off" maxlength="500" placeholder="Used for this request only" required>
+            <button id="toggle-key" class="text-button" type="button" aria-label="Show API key">Show</button>
+          </div>
+        </label>
+        <label>Requirements
+          <textarea id="requirements" name="userInput" maxlength="30000" placeholder="Enter a User Story, Acceptance Criteria, or ordinary automobile requirement…" required></textarea>
+        </label>
+        <div class="form-footer">
+          <label class="check"><input id="remember" type="checkbox" checked> Reuse identical results on this device</label>
+          <span id="character-count">0 / 30,000</span>
+        </div>
+        <div class="actions">
+          <button id="generate" class="primary" type="submit">Generate test cases</button>
+          <button id="clear-cache" class="secondary" type="button">Clear saved results</button>
+        </div>
+        <p class="privacy">Your key is sent through this server to the selected provider and is discarded after the request. For maximum trust, self-host this application and review the source.</p>
+      </form>
+    </section>
+
+    <section class="panel output-panel" aria-labelledby="output-heading">
+      <div class="panel-heading">
+        <div><span class="step">02</span><h2 id="output-heading">Test cases</h2></div>
+        <button id="copy" class="text-button" type="button" disabled>Copy</button>
+      </div>
+      <div id="status" class="status" role="status" aria-live="polite">Ready for requirements.</div>
+      <pre id="output" tabindex="0"></pre>
+    </section>
+  </main>
+  <script src="/app.js" type="module"></script>
+</body>
+</html>
