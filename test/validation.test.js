@@ -11,7 +11,11 @@ test("accepts a supported request", () => {
 });
 
 test("accepts Local Mistral without an API key", () => {
-  assert.equal(validateRequest({ provider: "local_mistral", apiKey: "", model: "mistral", userInput: "When A, B" }), null);
+  assert.equal(validateRequest({ provider: "local_mistral", apiKey: "", model: "mistral", performanceProfile: "low_memory", userInput: "When A, B" }), null);
+});
+
+test("rejects an unsupported local performance profile", () => {
+  assert.match(validateRequest({ provider: "local_mistral", apiKey: "", model: "mistral", performanceProfile: "maximum", userInput: "When A, B" }), /performance profile/);
 });
 
 test("rejects unsupported providers", () => {
