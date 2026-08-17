@@ -12,23 +12,23 @@
     <header class="hero">
       <p class="eyebrow">AUTOMOBILE QA WORKBENCH</p>
       <h1>Turn requirements into disciplined test cases.</h1>
-      <p class="intro">Bring your own model key. Generate traceable manual test cases without adding unstated automobile behavior.</p>
+      <p class="intro">Run Mistral on your own machine for private generation, or connect an optional cloud provider.</p>
     </header>
 
     <section class="panel" aria-labelledby="generator-heading">
       <div class="panel-heading">
         <div><span class="step">01</span><h2 id="generator-heading">Configure generation</h2></div>
-        <span class="secure">KEYS ARE NOT STORED</span>
+        <span class="secure">LOCAL-FIRST PRIVACY</span>
       </div>
 
       <form id="generator-form">
         <div class="grid">
           <label>Provider<select id="provider" name="provider" required></select></label>
-          <label>Model<input id="model" name="model" autocomplete="off" maxlength="120" placeholder="Enter a model ID" required></label>
+          <label>Model<input id="model" name="model" autocomplete="off" maxlength="120" value="mistral" placeholder="Enter a model ID" required></label>
         </div>
-        <label>API key
+        <label id="api-key-label">API key
           <div class="secret-field">
-            <input id="api-key" name="apiKey" type="password" autocomplete="off" maxlength="500" placeholder="Used for this request only" required>
+            <input id="api-key" name="apiKey" type="password" autocomplete="off" maxlength="500" placeholder="Not needed for Local Mistral">
             <button id="toggle-key" class="text-button" type="button" aria-label="Show API key">Show</button>
           </div>
         </label>
@@ -43,7 +43,7 @@
           <button id="generate" class="primary" type="submit">Generate test cases</button>
           <button id="clear-cache" class="secondary" type="button">Clear saved results</button>
         </div>
-        <p class="privacy">Your key is sent through this server to the selected provider and is discarded after the request. For maximum trust, self-host this application and review the source.</p>
+        <p id="privacy-message" class="privacy">Local Mistral keeps requirements and generated test cases on this machine. No API key or cloud connection is used.</p>
       </form>
     </section>
 
