@@ -12,7 +12,8 @@ const PUBLIC_DIR = fileURLToPath(new URL("../public/", import.meta.url));
 const BODY_LIMIT = 45_000;
 const WINDOW_MS = 60_000;
 const MAX_REQUESTS = 10;
-const REQUEST_TIMEOUT_MS = 90_000;
+const CLOUD_REQUEST_TIMEOUT_MS = 90_000;
+const LOCAL_REQUEST_TIMEOUT_MS = 600_000;
 const rateBuckets = new Map();
 
 const MIME = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".svg": "image/svg+xml" };
@@ -77,7 +78,8 @@ async function handleGenerate(request, response) {
   if (validationError) return sendJson(response, 400, { error: validationError });
 
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  const requestTimeout = body.provider === "local_mistral" ? LOCAL_REQUEST_TIMEOUT_MS : CLOUD_REQUEST_TIMEOUT_MS;
+  const timeout = setTimeout(() => controller.abort(), requestTimeout);
   try {
     const output = await generateWithProvider({
       provider: body.provider,
@@ -115,7 +117,9 @@ const server = createServer(async (request, response) => {
     return sendJson(response, 405, { error: "Method not allowed." });
   } catch (error) {
     const status = error.name === "AbortError" ? 504 : (error.status || 500);
-    const message = status === 500 ? "Unable to generate test cases." : error.message;
+    const message = error.name === "AbortError"
+      ? "Generation timed out. Confirm Ollama is running and check whether the model is using the GPU."
+      : (status === 500 ? "Unable to generate test cases." : error.message);
     sendJson(response, status, { error: message });
   }
 });

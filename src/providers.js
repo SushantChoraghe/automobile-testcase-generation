@@ -93,8 +93,8 @@ async function requestLocalMistral(model, systemPrompt, userInput, signal) {
         prompt: userInput,
         stream: false,
         think: false,
-        keep_alive: 0,
-        options: { temperature: 0, seed: 0, num_ctx: 8192, num_predict: 4096 }
+        keep_alive: "10m",
+        options: { temperature: 0, seed: 0, num_ctx: 8192, num_predict: 2048 }
       }),
       signal
     });
