@@ -92,7 +92,7 @@ Changing the prompt version, provider, model, or requirements creates a differen
 
 The generator decomposes every explicitly stated operating condition, trigger, duration, window, and observation into separate numbered steps. It does not create additional steps from unstated information.
 
-See [Generation troubleshooting](docs/GENERATION_TROUBLESHOOTING.md) for root causes, corrective actions, and requirement-writing guidance.
+See the [Test Case Generation Quality Guide](docs/GENERATION_TROUBLESHOOTING.md) for requirement-writing standards, root causes, corrective actions, performance guidance, and the contributor checklist.
 
 ## License
 
