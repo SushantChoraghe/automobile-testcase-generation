@@ -9,6 +9,7 @@ export function validateRequest(body) {
   if (!body || typeof body !== "object" || Array.isArray(body)) return "Invalid request body.";
   if (!['local_mistral', 'openai', 'anthropic', 'gemini'].includes(body.provider)) return "Select a supported provider.";
   if (body.provider !== "local_mistral" && (typeof body.apiKey !== "string" || body.apiKey.length < 8 || body.apiKey.length > 500)) return "Enter a valid API key.";
+  if (body.provider === "local_mistral" && !["low_memory", "balanced"].includes(body.performanceProfile || "low_memory")) return "Select a supported performance profile.";
   if (typeof body.model !== "string" || !body.model.trim() || body.model.length > MAX_MODEL_LENGTH) return "Enter a valid model name.";
   if (!/^[A-Za-z0-9._:/-]+$/.test(body.model)) return "The model name contains unsupported characters.";
   if (typeof body.userInput !== "string") return "Enter automobile requirements.";
