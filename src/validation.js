@@ -25,5 +25,8 @@ export function validateModelOutput(output) {
   if (!allowedStart.test(cleaned)) throw new Error("The provider response did not match the required test-case format.");
   const prohibited = /^\s*(Priority|Type|Title|Test Case Title|Test ID|ID|Preconditions|Postconditions|Test Data|Actual Result|Status|Requirement ID)\s*:/gim;
   if (prohibited.test(cleaned)) throw new Error("The provider response contained a prohibited field.");
+  const lastLine = cleaned.split("\n").map(line => line.trim()).filter(Boolean).at(-1) || "";
+  const completeEnding = /^(?:- \*\*Expected Result\*\*: .+|\*Negative test not applicable: No negative condition is explicitly described\.\*|\*Review Note: .+ is not defined\.\*|NON-COMPLIANT OUTPUT: INSUFFICIENT EXPLICIT INFORMATION\.)$/;
+  if (!completeEnding.test(lastLine)) throw new Error("The provider response was incomplete. Use a shorter requirement or the Balanced performance profile, then try again.");
   return cleaned;
 }
