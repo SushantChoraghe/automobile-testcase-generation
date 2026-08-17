@@ -11,6 +11,12 @@ const copy = document.querySelector('#copy');
 const count = document.querySelector('#character-count');
 const cachePrefix = 'autocase-forge:';
 let promptVersion = '1.0.0';
+const providerDefaults = {
+  local_mistral: { model: 'mistral', placeholder: 'Not needed for Local Mistral' },
+  openai: { model: '', placeholder: 'Used for this request only' },
+  anthropic: { model: '', placeholder: 'Used for this request only' },
+  gemini: { model: '', placeholder: 'Used for this request only' }
+};
 
 async function initialize() {
   try {
@@ -23,10 +29,26 @@ async function initialize() {
       option.textContent = item.label;
       provider.append(option);
     }
+    configureProvider();
   } catch {
     setStatus('Unable to load provider configuration.', true);
   }
 }
+
+function configureProvider() {
+  const local = provider.value === 'local_mistral';
+  apiKey.required = !local;
+  apiKey.disabled = local;
+  apiKey.value = '';
+  apiKey.placeholder = providerDefaults[provider.value]?.placeholder || 'Used for this request only';
+  document.querySelector('#toggle-key').hidden = local;
+  document.querySelector('#privacy-message').textContent = local
+    ? 'Local Mistral keeps requirements and generated test cases on this machine. No API key or cloud connection is used.'
+    : 'Your key is sent through this server to the selected provider and is discarded after the request. For maximum trust, use Local Mistral.';
+  model.value = providerDefaults[provider.value]?.model || '';
+}
+
+provider.addEventListener('change', configureProvider);
 
 function normalize(value) {
   return value.replace(/\r\n/g, '\n').split('\n').map(line => line.trimEnd()).join('\n').trim();
@@ -91,7 +113,7 @@ form.addEventListener('submit', async event => {
     const response = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ provider: provider.value, model: model.value.trim(), apiKey: apiKey.value, userInput })
+      body: JSON.stringify({ provider: provider.value, model: model.value.trim(), apiKey: provider.value === 'local_mistral' ? '' : apiKey.value, userInput })
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Generation failed.');

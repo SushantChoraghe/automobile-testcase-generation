@@ -2,16 +2,22 @@
 
 AutoCase Forge is a small, self-hostable web application for generating strict manual test cases from automobile requirements. It accepts a User Story, Acceptance Criteria, ordinary sentences, or a mixture of those formats.
 
+The recommended mode runs Mistral locally through Ollama. Requirements and generated results remain on the same machine, and no LLM API key is needed.
+
 Supported providers:
 
+- Local Mistral through Ollama (recommended)
 - OpenAI
 - Anthropic
 - Google Gemini
 
-Users supply their own provider key and model ID for each request.
+Cloud providers remain optional. Users supply their own provider key and model ID when selecting one.
 
 ## Security model
 
+- Local Mistral connects only to Ollama at `http://127.0.0.1:11434/api/generate`.
+- Local Mistral sends no requirements, results, or credentials to a cloud LLM provider.
+- The local endpoint is fixed and cannot be changed through the browser.
 - API keys are entered into a password field and sent only to this server over the current origin.
 - Keys are held only for the provider request. They are not stored, cached, logged, returned, or written to files.
 - Provider endpoints are fixed in server code. Users cannot supply arbitrary URLs.
@@ -25,10 +31,25 @@ A public deployment operator controls the server through which keys pass. Users 
 ## Requirements
 
 - Node.js 20 or newer
+- Ollama and the local `mistral` model for private local generation
 
 The project uses only Node.js built-ins and has no runtime package dependencies.
 
 ## Run locally
+
+Install Ollama from its official distribution, then download the Mistral model once:
+
+```bash
+ollama pull mistral
+```
+
+Ollama normally starts its local service during installation. If it is not running, start it:
+
+```bash
+ollama serve
+```
+
+In a separate terminal, start AutoCase Forge:
 
 ```bash
 npm start
@@ -36,7 +57,9 @@ npm start
 
 Open `http://localhost:3000`.
 
-No server-owned LLM key is required. Enter a provider key and model ID in the application.
+Select **Local Mistral (private)** and use the `mistral` model. No API key is required.
+
+The application requests an 8,192-token context window. On lower-memory machines, generation may be slower. Ollama unloads the model after each generation request.
 
 ## Configuration
 
