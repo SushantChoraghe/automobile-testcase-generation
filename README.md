@@ -59,7 +59,7 @@ Open `http://localhost:3000`.
 
 Select **Local Mistral (private)** and use the `mistral` model. No API key is required.
 
-The application requests an 8,192-token context window. On lower-memory machines, generation may be slower. Ollama unloads the model after each generation request.
+The application requests an 8,192-token context window and allows Local Mistral up to 10 minutes to finish. On lower-memory machines, the first generation may be slower. Ollama keeps the model loaded for 10 minutes so subsequent requests start faster.
 
 ## Configuration
 
