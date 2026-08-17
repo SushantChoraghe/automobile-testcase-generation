@@ -59,7 +59,7 @@ Open `http://localhost:3000`.
 
 Select **Local Mistral (private)** and use the `mistral` model. No API key is required.
 
-The default **Low memory** profile uses a 4,096-token context and a 1,024-token output limit for computers with 8 GB RAM. The optional **Balanced** profile uses an 8,192-token context and a 2,048-token output limit for computers with at least 16 GB RAM. Local Mistral has up to 10 minutes to finish, and Ollama keeps the model loaded for 10 minutes so subsequent requests start faster.
+The default **Low memory** profile uses a 4,096-token context and a 2,048-token output limit for computers with 8 GB RAM. The optional **Balanced** profile uses an 8,192-token context and a 2,048-token output limit for computers with at least 16 GB RAM. Local Mistral has up to 10 minutes to finish, and Ollama keeps the model loaded for 10 minutes so subsequent requests start faster.
 
 ## Configuration
 
@@ -91,6 +91,8 @@ When “Reuse identical results on this device” is enabled, the browser hashes
 Changing the prompt version, provider, model, or requirements creates a different cache entry.
 
 The generator decomposes every explicitly stated operating condition, trigger, duration, window, and observation into separate numbered steps. It does not create additional steps from unstated information.
+
+See [Generation troubleshooting](docs/GENERATION_TROUBLESHOOTING.md) for root causes, corrective actions, and requirement-writing guidance.
 
 ## License
 
