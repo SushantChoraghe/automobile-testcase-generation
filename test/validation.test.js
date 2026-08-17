@@ -30,3 +30,15 @@ test("accepts a correctly formatted output", () => {
 test("rejects prohibited fields", () => {
   assert.throws(() => validateModelOutput("TC-001: Brake\nPriority: High"), /prohibited field/);
 });
+
+test("rejects a response truncated inside a test case", () => {
+  assert.throws(
+    () => validateModelOutput("TC-001: Brake\n- **Steps**:\n  1. Measure the driver's horizontal"),
+    /response was incomplete/
+  );
+});
+
+test("accepts a complete review note", () => {
+  const value = "*Review Note: cumulative duration calculation is not defined.*";
+  assert.equal(validateModelOutput(value), value);
+});

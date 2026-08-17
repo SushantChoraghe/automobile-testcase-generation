@@ -84,7 +84,7 @@ async function requestGemini(apiKey, model, systemPrompt, userInput, signal) {
 async function requestLocalMistral(model, systemPrompt, userInput, performanceProfile, signal) {
   const profile = performanceProfile === "balanced"
     ? { num_ctx: 8192, num_predict: 2048 }
-    : { num_ctx: 4096, num_predict: 1024 };
+    : { num_ctx: 4096, num_predict: 2048 };
   let response;
   try {
     response = await fetch(PROVIDERS.local_mistral.endpoint, {

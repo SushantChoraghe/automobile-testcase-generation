@@ -3,7 +3,13 @@ import assert from "node:assert/strict";
 import { PROMPT_VERSION, SYSTEM_PROMPT } from "../src/prompt.js";
 
 test("prompt version invalidates earlier browser cache entries", () => {
-  assert.equal(PROMPT_VERSION, "1.1.0");
+  assert.equal(PROMPT_VERSION, "1.2.0");
+});
+
+test("prompt isolates acceptance criteria and requires observable results", () => {
+  assert.match(SYSTEM_PROMPT, /each numbered Acceptance Criterion as an independent source/);
+  assert.match(SYSTEM_PROMPT, /Do not copy a condition, value, state, or trigger/);
+  assert.match(SYSTEM_PROMPT, /Expected Results must be externally observable behaviors/);
 });
 
 test("prompt requires deterministic multi-step decomposition", () => {
