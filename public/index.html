@@ -26,6 +26,12 @@
           <label>Provider<select id="provider" name="provider" required></select></label>
           <label>Model<input id="model" name="model" autocomplete="off" maxlength="120" value="mistral" placeholder="Enter a model ID" required></label>
         </div>
+        <label id="performance-profile-label">Performance profile
+          <select id="performance-profile" name="performanceProfile">
+            <option value="low_memory">Low memory — recommended for 8 GB RAM</option>
+            <option value="balanced">Balanced — 16 GB RAM or more</option>
+          </select>
+        </label>
         <label id="api-key-label">API key
           <div class="secret-field">
             <input id="api-key" name="apiKey" type="password" autocomplete="off" maxlength="500" placeholder="Not needed for Local Mistral">

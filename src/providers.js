@@ -81,7 +81,10 @@ async function requestGemini(apiKey, model, systemPrompt, userInput, signal) {
   return (body.candidates?.[0]?.content?.parts || []).map(part => part.text || "").join("\n");
 }
 
-async function requestLocalMistral(model, systemPrompt, userInput, signal) {
+async function requestLocalMistral(model, systemPrompt, userInput, performanceProfile, signal) {
+  const profile = performanceProfile === "balanced"
+    ? { num_ctx: 8192, num_predict: 2048 }
+    : { num_ctx: 4096, num_predict: 1024 };
   let response;
   try {
     response = await fetch(PROVIDERS.local_mistral.endpoint, {
@@ -94,7 +97,7 @@ async function requestLocalMistral(model, systemPrompt, userInput, signal) {
         stream: false,
         think: false,
         keep_alive: "10m",
-        options: { temperature: 0, seed: 0, num_ctx: 8192, num_predict: 2048 }
+        options: { temperature: 0, seed: 0, ...profile }
       }),
       signal
     });
@@ -109,13 +112,13 @@ async function requestLocalMistral(model, systemPrompt, userInput, signal) {
   return body.response || "";
 }
 
-export async function generateWithProvider({ provider, apiKey, model, systemPrompt, userInput, signal }) {
+export async function generateWithProvider({ provider, apiKey, model, systemPrompt, userInput, performanceProfile, signal }) {
   if (!PROVIDERS[provider]) {
     const error = new Error("Unsupported provider");
     error.status = 400;
     throw error;
   }
-  if (provider === "local_mistral") return requestLocalMistral(model, systemPrompt, userInput, signal);
+  if (provider === "local_mistral") return requestLocalMistral(model, systemPrompt, userInput, performanceProfile, signal);
   if (provider === "openai") return requestOpenAI(apiKey, model, systemPrompt, userInput, signal);
   if (provider === "anthropic") return requestAnthropic(apiKey, model, systemPrompt, userInput, signal);
   return requestGemini(apiKey, model, systemPrompt, userInput, signal);

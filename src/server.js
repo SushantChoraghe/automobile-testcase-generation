@@ -87,6 +87,7 @@ async function handleGenerate(request, response) {
       model: body.model.trim(),
       systemPrompt: SYSTEM_PROMPT,
       userInput: normalizeInput(body.userInput),
+      performanceProfile: body.performanceProfile || "low_memory",
       signal: controller.signal
     });
     return sendJson(response, 200, { output: validateModelOutput(output), promptVersion: PROMPT_VERSION });

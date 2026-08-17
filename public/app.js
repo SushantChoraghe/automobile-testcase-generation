@@ -2,6 +2,7 @@ const form = document.querySelector('#generator-form');
 const provider = document.querySelector('#provider');
 const model = document.querySelector('#model');
 const apiKey = document.querySelector('#api-key');
+const performanceProfile = document.querySelector('#performance-profile');
 const requirements = document.querySelector('#requirements');
 const remember = document.querySelector('#remember');
 const generate = document.querySelector('#generate');
@@ -42,6 +43,7 @@ function configureProvider() {
   apiKey.value = '';
   apiKey.placeholder = providerDefaults[provider.value]?.placeholder || 'Used for this request only';
   document.querySelector('#toggle-key').hidden = local;
+  document.querySelector('#performance-profile-label').hidden = !local;
   document.querySelector('#privacy-message').textContent = local
     ? 'Local Mistral keeps requirements and generated test cases on this machine. No API key or cloud connection is used.'
     : 'Your key is sent through this server to the selected provider and is discarded after the request. For maximum trust, use Local Mistral.';
@@ -98,7 +100,7 @@ document.querySelector('#clear-cache').addEventListener('click', () => {
 form.addEventListener('submit', async event => {
   event.preventDefault();
   const userInput = normalize(requirements.value);
-  const cacheKey = cachePrefix + await fingerprint(`${promptVersion}\n${provider.value}\n${model.value.trim()}\n${userInput}`);
+  const cacheKey = cachePrefix + await fingerprint(`${promptVersion}\n${provider.value}\n${model.value.trim()}\n${performanceProfile.value}\n${userInput}`);
   if (remember.checked) {
     const cached = localStorage.getItem(cacheKey);
     if (cached) return render(cached, 'Reused the identical result saved on this device.');
@@ -113,7 +115,13 @@ form.addEventListener('submit', async event => {
     const response = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ provider: provider.value, model: model.value.trim(), apiKey: provider.value === 'local_mistral' ? '' : apiKey.value, userInput })
+      body: JSON.stringify({
+        provider: provider.value,
+        model: model.value.trim(),
+        apiKey: provider.value === 'local_mistral' ? '' : apiKey.value,
+        performanceProfile: performanceProfile.value,
+        userInput
+      })
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Generation failed.');
