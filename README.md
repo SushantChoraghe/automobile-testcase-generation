@@ -1,4 +1,4 @@
-# AutoCase Forge
+# Automobile Test Case Generator - AutoCase Forge
 
 Privacy-first automobile manual test-case generation with Local Mistral and optional cloud LLM providers.
 
