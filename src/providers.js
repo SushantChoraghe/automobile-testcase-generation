@@ -1,4 +1,8 @@
 const PROVIDERS = Object.freeze({
+  local_mistral: {
+    label: "Local Mistral (private)",
+    endpoint: "http://127.0.0.1:11434/api/generate"
+  },
   openai: {
     label: "OpenAI",
     endpoint: "https://api.openai.com/v1/responses"
@@ -77,12 +81,41 @@ async function requestGemini(apiKey, model, systemPrompt, userInput, signal) {
   return (body.candidates?.[0]?.content?.parts || []).map(part => part.text || "").join("\n");
 }
 
+async function requestLocalMistral(model, systemPrompt, userInput, signal) {
+  let response;
+  try {
+    response = await fetch(PROVIDERS.local_mistral.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model,
+        system: systemPrompt,
+        prompt: userInput,
+        stream: false,
+        think: false,
+        keep_alive: 0,
+        options: { temperature: 0, seed: 0, num_ctx: 8192, num_predict: 4096 }
+      }),
+      signal
+    });
+  } catch (error) {
+    if (error.name === "AbortError") throw error;
+    const localError = new Error("Local Mistral is unavailable. Start Ollama and run: ollama pull mistral");
+    localError.status = 503;
+    throw localError;
+  }
+  const body = await response.json().catch(() => ({}));
+  ensureSuccessful(response, "Local Mistral", body);
+  return body.response || "";
+}
+
 export async function generateWithProvider({ provider, apiKey, model, systemPrompt, userInput, signal }) {
   if (!PROVIDERS[provider]) {
     const error = new Error("Unsupported provider");
     error.status = 400;
     throw error;
   }
+  if (provider === "local_mistral") return requestLocalMistral(model, systemPrompt, userInput, signal);
   if (provider === "openai") return requestOpenAI(apiKey, model, systemPrompt, userInput, signal);
   if (provider === "anthropic") return requestAnthropic(apiKey, model, systemPrompt, userInput, signal);
   return requestGemini(apiKey, model, systemPrompt, userInput, signal);
